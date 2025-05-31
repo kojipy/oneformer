@@ -65,6 +65,7 @@ def plot(image, predict_mask):
     for info in predict_mask["segments_info"]:
         canvas[np.where(mask_numpy == info["id"])] = color_map[info["label_id"]]
 
+        # インスタンスごとの輪郭を計算して赤枠で囲む
         mask = np.zeros_like(mask_numpy, dtype=np.uint8)
         mask[np.where(mask_numpy == info["id"])] = 255
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
