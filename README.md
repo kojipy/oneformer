@@ -1,2 +1,2 @@
-# oneformer
+# OneFormer
 OneFormerお試し
