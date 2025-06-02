@@ -1,4 +1,6 @@
+import argparse
 import random
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -7,6 +9,25 @@ from PIL import Image
 from transformers import OneFormerForUniversalSegmentation, OneFormerProcessor
 
 MODEL = "shi-labs/oneformer_cityscapes_swin_large"
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="OneFormer Segmentation")
+    parser.add_argument("image", type=Path, help="image path to predict")
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="shi-labs/oneformer_cityscapes_swin_large",
+        help="Model name or path",
+    )
+    parser.add_argument(
+        "--task",
+        type=str,
+        choices=["panoptic", "semantic", "instance"],
+        default="panoptic",
+        help="Segmentation task",
+    )
+    return parser.parse_args()
 
 
 class OneFormer:
@@ -50,7 +71,7 @@ def _create_color_map(segments_info):
     color_map = {}
     unique_label_ids = set([info["label_id"] for info in segments_info])
     for label_id in unique_label_ids:
-        color_map[label_id] = random.sample(range(100, 180), k=3)
+        color_map[label_id] = random.sample(range(50, 230), k=3)
     return color_map
 
 
@@ -74,17 +95,17 @@ def plot(image, predict_mask):
     return canvas
 
 
-if __name__ == "__main__":
-    oneformer = OneFormer(MODEL)
+def main():
+    args = parse_args()
+    oneformer = OneFormer(args.model)
 
-    image = Image.open("cityscapes.png")
-
+    image = Image.open(args.image)
     outputs = oneformer.predict(image)
-
     predicted_panoptic = outputs[0]
     result = plot(image, predicted_panoptic)
 
-    canvas, img_arr = plot(image, predicted_panoptic)
+    cv2.imwrite("mask.png", result)
 
-    cv2.imwrite(f"mask.png", canvas)
-    cv2.imwrite("origin.png", img_arr)
+
+if __name__ == "__main__":
+    main()
