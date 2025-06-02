@@ -71,7 +71,7 @@ def plot(image, predict_mask):
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cv2.drawContours(canvas, contours, -1, (0, 0, 255), thickness=2)
 
-    return canvas, img_arr
+    return canvas
 
 
 if __name__ == "__main__":
@@ -82,6 +82,7 @@ if __name__ == "__main__":
     outputs = oneformer.predict(image)
 
     predicted_panoptic = outputs[0]
+    result = plot(image, predicted_panoptic)
 
     canvas, img_arr = plot(image, predicted_panoptic)
 
