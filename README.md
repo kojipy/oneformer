@@ -12,6 +12,6 @@ uv run python src/predict.py data/origin.png
 ```
 
 ## 可視化結果
-|入力画像|推論結果|
+|入力画像|推論結果(Panoptic Segmentation)|
 |---|---|
 |![input_image](./data/origin.png)|![segmentation](./data/mask.png)|
